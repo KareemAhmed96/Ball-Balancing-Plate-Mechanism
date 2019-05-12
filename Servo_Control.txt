@@ -1,0 +1,73 @@
+#include <Servo.h>
+
+#define DEFAULT_ANGLE 70
+#define STEP          5
+#define MAX_ANGLE	  90
+
+Servo servo_1;  // create servo object to control a servo
+Servo servo_2;
+
+char message;
+
+unsigned char angle_1 = DEFAULT_ANGLE;
+unsigned char angle_2 = DEFAULT_ANGLE;
+
+void setup() {
+  
+  Serial.begin(9600);
+    
+  servo_1.attach(9);  // attaches the servo on pin 9 to the servo object
+  servo_2.attach(10);
+}
+
+void loop() {
+
+  if (Serial.available()>0){
+    
+  message = Serial.read();
+  
+  //Serial.print(message);
+  
+  //Bottom Right Corner
+  if(message == '1'){
+    angle_1 -= STEP;
+    angle_2 += STEP;
+  }
+  
+  //Top Right Corner
+  else if(message == '2'){
+    angle_1 -= STEP;
+    angle_2 -= STEP;
+  }
+  
+  //Bottom Left Corner
+  else if(message == '3'){
+    angle_1 += STEP;
+    angle_2 += STEP; 
+  }
+  
+  //Top Left Corner
+  else if(message == '4'){
+    angle_1 += STEP;
+    angle_2 -= STEP;
+  }
+  
+  //Center
+  else{
+    angle_1 = DEFAULT_ANGLE;
+    angle_2 = DEFAULT_ANGLE;  
+  }
+  
+  servo_1.write(angle_1);
+  
+  if(angle_1 == MAX_ANGLE)
+    angle_1 = DEFAULT_ANGLE;
+  
+  servo_2.write(angle_2);
+  
+  if(angle_2 == MAX_ANGLE)
+    angle_2 = DEFAULT_ANGLE;
+    
+  while (Serial.available()>0) message = Serial.read();
+ }
+}
