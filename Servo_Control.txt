@@ -1,10 +1,14 @@
 #include <Servo.h>
 
-#define DEFAULT_ANGLE 70
-#define STEP          5
-#define MAX_ANGLE	  90
+#define DEFAULT_ANGLE 90
+#define STEP          2
+#define MAX_ANGLE     120
+#define MIN_ANGLE     70
 
-Servo servo_1;  // create servo object to control a servo
+//Higher number translates to slower servo speed
+#define SERVO_SPEED   10
+
+Servo servo_1;
 Servo servo_2;
 
 char message;
@@ -16,7 +20,7 @@ void setup() {
   
   Serial.begin(9600);
     
-  servo_1.attach(9);  // attaches the servo on pin 9 to the servo object
+  servo_1.attach(9);
   servo_2.attach(10);
 }
 
@@ -27,46 +31,75 @@ void loop() {
   message = Serial.read();
   
   //Serial.print(message);
-  
-  //Bottom Right Corner
-  if(message == '1'){
+    
+  //Top left corner
+  if(message == '4'){
     angle_1 -= STEP;
     angle_2 += STEP;
+    
+    if(angle_1 <= MIN_ANGLE){
+      angle_1 = DEFAULT_ANGLE;
+    }  
+    if(angle_2 >= MAX_ANGLE){
+      angle_2 = DEFAULT_ANGLE;
+    }
   }
   
-  //Top Right Corner
-  else if(message == '2'){
+  //Bottom left corner
+  else if(message == '3'){
     angle_1 -= STEP;
     angle_2 -= STEP;
+    
+    if(angle_1 <= MIN_ANGLE){
+      angle_1 = DEFAULT_ANGLE;
+    }  
+    if(angle_2 <= MIN_ANGLE){
+      angle_2 = DEFAULT_ANGLE;
+    }
   }
   
-  //Bottom Left Corner
-  else if(message == '3'){
+  //Top right corner
+  else if(message == '2'){
     angle_1 += STEP;
-    angle_2 += STEP; 
+    angle_2 += STEP;
+    
+    if(angle_1 >= MAX_ANGLE){
+      angle_1 = DEFAULT_ANGLE;
+    }  
+    if(angle_2 >= MAX_ANGLE){
+      angle_2 = DEFAULT_ANGLE;
+    }
   }
   
-  //Top Left Corner
-  else if(message == '4'){
+  //Bottom right corner
+  else if(message == '1'){
     angle_1 += STEP;
     angle_2 -= STEP;
+    
+    if(angle_1 >= MAX_ANGLE){
+      angle_1 = DEFAULT_ANGLE;
+    }  
+    if(angle_2 <= MIN_ANGLE){
+      angle_2 = DEFAULT_ANGLE;
+    }
   }
   
-  //Center
   else{
     angle_1 = DEFAULT_ANGLE;
     angle_2 = DEFAULT_ANGLE;  
   }
   
   servo_1.write(angle_1);
+  delay(SERVO_SPEED);
   
-  if(angle_1 == MAX_ANGLE)
-    angle_1 = DEFAULT_ANGLE;
+  //if(angle_1 == MAX_ANGLE)
+    //angle_1 = DEFAULT_ANGLE;
   
   servo_2.write(angle_2);
+  delay(SERVO_SPEED);
   
-  if(angle_2 == MAX_ANGLE)
-    angle_2 = DEFAULT_ANGLE;
+  //if(angle_2 == MAX_ANGLE)
+    //angle_2 = DEFAULT_ANGLE;
     
   while (Serial.available()>0) message = Serial.read();
  }
