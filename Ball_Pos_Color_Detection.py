@@ -10,20 +10,21 @@ A_serial = serial.Serial('/dev/ttyACM0', 9600)
 while True:
     _,frame = cap.read()
     
-    #"Height", "Width", "Depth (0,1,2) : corrosponding to RGB or any color space"
+    # "Height", "Width", "Depth (0,1,2) : corrosponding to RGB or any color space"
     h_frame,w_frame, d = frame.shape
     
-    #Center of image returned from frame.shape function 
+    # Center of image returned from frame.shape function 
     h_frame = int(h_frame/2)  
     w_frame = int(w_frame/2)
-
-    #print(h_frame)
-    #print(w_frame)
+	
+    # For Debugging	
+    # print(h_frame)
+    # print(w_frame)
     
-    #HSV Conversion
+    # HSV Conversion
     hsv_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2HSV) #used in tracking
     
-    #Region of interest [from height : to height , from width : to width , from color space : to color space]
+    # Region of interest [from height : to height , from width : to width , from color space : to color space]
     roi       = hsv_frame[ (h_frame - 50) : (h_frame + 50) , (w_frame - 50) : (w_frame + 50), : ] #croping
     hsv_roi   = cv2.cvtColor(roi, cv2.COLOR_RGB2HSV) #used in min & max
    
@@ -36,23 +37,26 @@ while True:
         # neglect arguments (1 & 3), just use "cv2.CHAIN_APPROX_SIMPLE"
         # returns a list describing the contours "lines" surrounding the object
         _,contours,_ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
-        #print(contours)
+	
+	# Debugging
+        # print(contours)
         
         for contour in contours:
             if cv2.contourArea(contour) > 500:
                 x,y,w,h = cv2.boundingRect(contour) #returns coordinates ex: (x+w, y+h)
                 frame = cv2.rectangle(frame, (x,y), (x+w,y+h), (255, 0, 0), 2) #drawing a rectangle
         
-        #cv2.imshow("FRAME",frame)
+	# Debugging
+        # cv2.imshow("FRAME",frame)
 
         """Ball Position"""
 
         pos_x = int(x+w/2)
         pos_y = int(y+h/2)
-
-        #print(pos_x)
-        #print(pos_y)
+	
+	# Debugging
+        # print(pos_x)
+        # print(pos_y)
 
         if ( (pos_x > (w_frame + 50)) and (pos_y > (h_frame - 50))):
             print("1 - Bottom Right Corner")
@@ -100,9 +104,10 @@ while True:
     
     """"""
     
-    #Tests
+    # Tests
     cv2.imshow("roi", roi)
-    #Showing HSV effect
+	
+    # Showing HSV effect
     cv2.imshow("HSV",hsv_frame)
     
     k=cv2.waitKey(1)
@@ -111,8 +116,9 @@ while True:
         
         """Range of Color"""
         
-        #roi[ height , width , HSV ]
-        #roi[ : , : , 0] # All hue
+	# ROI -> Region of Interest
+        # roi[ height , width , HSV ]
+        # roi[ : , : , 0] # All hue
         
         h_min = roi[ : , : , 0].min() # Minimum hue value "using numpy array function"
         h_max = roi[ : , : , 0].max() # Maximum hue value "using numpy array function"
@@ -123,17 +129,17 @@ while True:
         v_min = roi[ : , : , 2].min() # Minimum & Maximum values of value
         v_max = roi[ : , : , 2].max()
         
-        min_HSV = np.array([h_min, s_min, v_min]) #Minimum HSV array
-        max_HSV = np.array([h_max, s_max, v_max]) #Maximum HSV array
+        min_HSV = np.array([h_min, s_min, v_min]) # Minimum HSV array
+        max_HSV = np.array([h_max, s_max, v_max]) # Maximum HSV array
         
         tracking = True #flag
         
         """"""
-    if k == 27 : #value of ESC key
+    if k == 27 : # value of ESC key
         break
     
     if k == ord('o'):
-        tracking = False #stops tracking
+        tracking = False # stops tracking
         
-cap.release() #release camera resource
-cv2.destroyAllWindows() #close GUI
+cap.release() # release camera resource
+cv2.destroyAllWindows() # close GUI
