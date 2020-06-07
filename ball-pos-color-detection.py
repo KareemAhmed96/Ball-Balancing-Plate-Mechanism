@@ -65,7 +65,6 @@ while True:
             except:
                 print("Error_1")
 
-                
         elif ( (pos_x > (w_frame + 50)) and (pos_y < (h_frame + 50))):
             print("2 - Top Right Corner")
             try:
@@ -73,15 +72,13 @@ while True:
             except:
                 print("Error_2")
 
-                
         elif ( (pos_x < (w_frame - 50)) and (pos_y > (h_frame - 50))):
             print("3 - Bottom Left Corner")
             try:
                 A_serial.write("3".encode("utf-8"))
             except:
                 print("Error_3")
-
-                
+  
         elif ( (pos_x < (w_frame - 50)) and (pos_y < (h_frame + 50))):
             print("4 - Top Left Corner")
             try:
@@ -89,15 +86,13 @@ while True:
             except:
                 print("Error_4")
 
-                
         else:
             print("Center")
             try:
                 A_serial.write("5".encode("utf-8"))
             except:
                 print("Error_5")
-                
-                
+                       
         cv2.imshow("MASK",mask)
         
     cv2.imshow("Frame", frame)
@@ -120,26 +115,27 @@ while True:
         # roi[ height , width , HSV ]
         # roi[ : , : , 0] # All hue
         
-        h_min = roi[ : , : , 0].min() # Minimum hue value "using numpy array function"
-        h_max = roi[ : , : , 0].max() # Maximum hue value "using numpy array function"
+        h_min = roi[ : , : , 0].min() 			# Minimum hue value "using numpy array function"
+        h_max = roi[ : , : , 0].max() 			# Maximum hue value "using numpy array function"
         
-        s_min = roi[ : , : , 1].min() # Minimum & Maximum values of saturation
+        s_min = roi[ : , : , 1].min()			# Minimum & Maximum values of saturation
         s_max = roi[ : , : , 1].max()
         
-        v_min = roi[ : , : , 2].min() # Minimum & Maximum values of value
+        v_min = roi[ : , : , 2].min() 			# Minimum & Maximum values of value
         v_max = roi[ : , : , 2].max()
         
-        min_HSV = np.array([h_min, s_min, v_min]) # Minimum HSV array
-        max_HSV = np.array([h_max, s_max, v_max]) # Maximum HSV array
+        min_HSV = np.array([h_min, s_min, v_min]) 	# Minimum HSV array
+        max_HSV = np.array([h_max, s_max, v_max]) 	# Maximum HSV array
         
-        tracking = True #flag
+	#flag
+        tracking = True
         
         """"""
-    if k == 27 : # value of ESC key
+    if k == 27 : 		# value of ESC key
         break
     
     if k == ord('o'):
-        tracking = False # stops tracking
+        tracking = False 	# stops tracking
         
-cap.release() # release camera resource
-cv2.destroyAllWindows() # close GUI
+cap.release() 			# release camera resource
+cv2.destroyAllWindows() 	# close GUI
